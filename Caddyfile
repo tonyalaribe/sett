@@ -1,0 +1,6 @@
+:2011/sett/ {
+  root public
+  proxy api/ localhost:8080
+
+  rewrite { to {path} {path}/ /index.html }
+}
