@@ -13,7 +13,7 @@ export var State = {
 		return m
 			.request({
 				method: "GET",
-				url: "${BACKEND_ROOT}/sett/api/sett_data/databases"
+				url: `${BACKEND_ROOT}/sett/api/sett_data/databases`
 			})
 			.then(function(response) {
 				State.Databases = response;
