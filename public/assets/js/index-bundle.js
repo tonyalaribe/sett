@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1324,7 +1324,7 @@ m.vnode = Vnode
 if (true) module["exports"] = m
 else window.m = m
 }());
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).setImmediate, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).setImmediate, __webpack_require__(1)))
 
 /***/ }),
 /* 1 */
@@ -1415,13 +1415,106 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.State = undefined;
+
 var _mithril = __webpack_require__(0);
 
 var _mithril2 = _interopRequireDefault(_mithril);
 
-var _shell = __webpack_require__(7);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var State = exports.State = {
+	Databases: [],
+	Keys: [],
+	CurrPage: 1,
+	CurrKeyPage: 1,
+	GetDatabases: function GetDatabases() {
+		return _mithril2.default.request({
+			method: "GET",
+			url: "http://localhost:8080/sett/api/sett_data/databases"
+		}).then(function (response) {
+			State.Databases = response;
+		}).catch(function (error) {
+			console.error(error);
+		});
+	},
+	GetKeys: function GetKeys(db) {
+		return _mithril2.default.request({
+			method: "GET",
+			url: "http://localhost:8080/sett/api/sett_data/keys/" + db
+		}).then(function (response) {
+			State.Keys = response;
+		}).catch(function (error) {
+			console.error(error);
+		});
+	},
+	LoadValue: function LoadValue(db, key) {
+		return _mithril2.default.request({
+			method: "GET",
+			url: "http://localhost:8080/sett/api/sett_data/value/" + db + "/" + key
+		}).then(function (response) {
+			State.CurrentValue = response;
+			State.CurrPage = 1;
+			State.CurrKeyPage = 1;
+		}).catch(function (error) {
+			console.error(error);
+		});
+	},
+	LoadMoreKeys: function LoadMoreKeys(db) {
+		State.CurrPage++;
+		return _mithril2.default.request({
+			method: "GET",
+			url: "http://localhost:8080/sett/api/sett_data/keys/" + db + "?p=" + State.CurrPage
+		}).then(function (response) {
+			State.Keys = State.Keys.concat(response);
+		}).catch(function (error) {
+			console.error(error);
+		});
+	},
+	KeysSearch: function KeysSearch(db, query) {
+		console.log(db, query);
+		return _mithril2.default.request({
+			method: "GET",
+			url: "http://localhost:8080/sett/api/sett_data/search/" + db + "?k=" + query
+		}).then(function (response) {
+			console.log(response);
+			State.Keys = State.Keys.concat(response);
+		}).catch(function (error) {
+			console.error(error);
+		});
+	},
+	KeysSearchMore: function KeysSearchMore(db, query) {
+		State.CurrPage++;
+		return _mithril2.default.request({
+			method: "GET",
+			url: "http://localhost:8080/sett/api/sett_data/keys/" + db + "?p=" + State.CurrPage
+		}).then(function (response) {
+			State.Keys = State.Keys.concat(response);
+		}).catch(function (error) {
+			console.error(error);
+		});
+	}
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _mithril = __webpack_require__(0);
+
+var _mithril2 = _interopRequireDefault(_mithril);
+
+var _shell = __webpack_require__(8);
 
 var _chooseDatabase = __webpack_require__(12);
+
+var _exploreDatabase = __webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1431,18 +1524,29 @@ _mithril2.default.route.prefix("#!");
 
 _mithril2.default.route(root, "/", {
 	"/": {
-		view: function view() {
+		view: function view(_ref) {
+			var attrs = _ref.attrs;
 			return (0, _mithril2.default)(
 				_shell.Shell,
-				null,
-				(0, _mithril2.default)(_chooseDatabase.ChooseDatabase, null)
+				attrs,
+				(0, _mithril2.default)(_chooseDatabase.ChooseDatabase, attrs)
+			);
+		}
+	},
+	"/db/:db": {
+		view: function view(_ref2) {
+			var attrs = _ref2.attrs;
+			return (0, _mithril2.default)(
+				_shell.Shell,
+				attrs,
+				(0, _mithril2.default)(_exploreDatabase.ExploreDatabase, attrs)
 			);
 		}
 	}
 });
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -1495,13 +1599,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(5);
+__webpack_require__(6);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -1691,10 +1795,10 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(7)))
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1884,7 +1988,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1966,7 +2070,6 @@ var Shell = exports.Shell = {
 };
 
 /***/ }),
-/* 8 */,
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2527,10 +2630,206 @@ module.exports = exports["default"];
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-throw new Error("Module build failed: SyntaxError: JSX value should be either an expression or a quoted JSX text (10:68)\n\n\u001b[0m \u001b[90m  8 | \u001b[39m\t\tlet { db } \u001b[33m=\u001b[39m vnode\u001b[33m.\u001b[39mattrs\u001b[33m;\u001b[39m\n \u001b[90m  9 | \u001b[39m\t\t\u001b[36mreturn\u001b[39m (\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 10 | \u001b[39m\t\t\t\u001b[33m<\u001b[39m\u001b[33ma\u001b[39m \u001b[36mclass\u001b[39m\u001b[33m=\u001b[39m\u001b[32m\"db link grow navy z3 mv2\"\u001b[39m oncreate\u001b[33m=\u001b[39m{m\u001b[33m.\u001b[39mroute\u001b[33m.\u001b[39mlink} href\u001b[33m=\u001b[39m\u001b[32m`/db/${db}`\u001b[39m\u001b[33m>\u001b[39m\n \u001b[90m    | \u001b[39m\t\t\t                                                                 \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 11 | \u001b[39m\t\t\t\t\u001b[33m<\u001b[39m\u001b[33mdiv\u001b[39m \u001b[36mclass\u001b[39m\u001b[33m=\u001b[39m\u001b[32m\"bt bb b--white bg-white shadow-4\"\u001b[39m\u001b[33m>\u001b[39m\n \u001b[90m 12 | \u001b[39m\t\t\t\t\t\u001b[33m<\u001b[39m\u001b[33mdiv\u001b[39m \u001b[36mclass\u001b[39m\u001b[33m=\u001b[39m\u001b[32m\"pa4 f3\"\u001b[39m\n \u001b[90m 13 | \u001b[39m\t\t\t\t\t\u001b[33m>\u001b[39m\u001b[0m\n");
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.ChooseDatabase = exports.ListItem = undefined;
+
+var _mithril = __webpack_require__(0);
+
+var _mithril2 = _interopRequireDefault(_mithril);
+
+var _classnames = __webpack_require__(2);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _state = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ListItem = exports.ListItem = {
+	view: function view(vnode) {
+		console.log(vnode);
+		var db = vnode.attrs.db;
+
+		return (0, _mithril2.default)(
+			"a",
+			{
+				"class": "db link grow navy z3 mv2",
+				oncreate: _mithril2.default.route.link,
+				href: "/db/" + db
+			},
+			(0, _mithril2.default)(
+				"div",
+				{ "class": "bt bb b--white bg-white shadow-4" },
+				(0, _mithril2.default)(
+					"div",
+					{ "class": "pa4 f3" },
+					(0, _mithril2.default)(
+						"span",
+						null,
+						db
+					)
+				)
+			)
+		);
+	}
+};
+
+var ChooseDatabase = exports.ChooseDatabase = {
+	oncreate: function oncreate() {
+		_state.State.GetDatabases();
+	},
+	view: function view() {
+		return (0, _mithril2.default)(
+			"section",
+			null,
+			(0, _mithril2.default)(
+				"section",
+				{ "class": "tc dt vh-100 w-100" },
+				(0, _mithril2.default)(
+					"div",
+					{ "class": "dtc v-mid tc" },
+					(0, _mithril2.default)(
+						"div",
+						{ "class": "dib w-50-ns " },
+						(0, _mithril2.default)(
+							"div",
+							null,
+							(0, _mithril2.default)(
+								"h2",
+								{ "class": "pa3" },
+								"Databases"
+							)
+						),
+						_state.State.Databases.map(function (db) {
+							return (0, _mithril2.default)(ListItem, { db: db });
+						})
+					)
+				)
+			)
+		);
+	}
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.ExploreDatabase = undefined;
+
+var _mithril = __webpack_require__(0);
+
+var _mithril2 = _interopRequireDefault(_mithril);
+
+var _state = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ExploreDatabase = exports.ExploreDatabase = {
+	oncreate: function oncreate(vnode) {
+		var db = vnode.attrs.db;
+		console.log(vnode);
+		_state.State.GetKeys(db);
+	},
+
+	view: function view(_ref) {
+		var db = _ref.attrs.db;
+
+		return (0, _mithril2.default)(
+			"section",
+			null,
+			(0, _mithril2.default)(
+				"div",
+				{ "class": "" },
+				(0, _mithril2.default)(
+					"a",
+					{ oncreate: _mithril2.default.route.link, href: "/", "class": "dib pa2 " },
+					"home"
+				),
+				">",
+				(0, _mithril2.default)(
+					"span",
+					{ "class": "dib pa2" },
+					db
+				)
+			),
+			(0, _mithril2.default)(
+				"div",
+				{ "class": "tc pa3 " },
+				(0, _mithril2.default)("input", { type: "text", "class": "pa3 ba bw0 shadow-4 w-50-ns w-100 dib ba b--light-gray", placeholder: "Search for keys", oninput: _mithril2.default.withAttr("value", function (v) {
+						return _state.State.KeysSearch(db, v);
+					}) })
+			),
+			(0, _mithril2.default)(
+				"section",
+				{ "class": "", style: "height:85vh" },
+				(0, _mithril2.default)(
+					"section",
+					{ "class": "w-30 dib v-top h-100" },
+					(0, _mithril2.default)(
+						"a",
+						{ "class": "db pa3 bg-navy white-90 tc" },
+						"Keys"
+					),
+					(0, _mithril2.default)(
+						"div",
+						{ "class": "overflow-scroll ", style: "height:90%" },
+						_state.State.Keys.map(function (key, i) {
+							return (0, _mithril2.default)(
+								"a",
+								{
+									"class": "db pa3 bb b--light grow pointer",
+									key: i,
+									onclick: function onclick() {
+										return _state.State.LoadValue(db, key);
+									}
+								},
+								key
+							);
+						}),
+						(0, _mithril2.default)(
+							"div",
+							{ "class": "tc pv2" },
+							(0, _mithril2.default)(
+								"a",
+								{ "class": "bg-navy white-90 pa3 dib pointer", onclick: function onclick() {
+										return _state.State.LoadMoreKeys(db);
+									} },
+								"Load more"
+							)
+						)
+					)
+				),
+				(0, _mithril2.default)(
+					"section",
+					{ "class": "w-70 dib bl b--light-gray v-top h-100" },
+					(0, _mithril2.default)(
+						"a",
+						{ "class": "db pa3 bg-navy white-90 tc" },
+						"Values"
+					),
+					(0, _mithril2.default)(
+						"div",
+						{ "class": "wraph-100 pa4", style: "overflow-wrap: break-word;;" },
+						_state.State.CurrentValue
+					)
+				)
+			)
+		);
+	}
+};
 
 /***/ })
 /******/ ]);
