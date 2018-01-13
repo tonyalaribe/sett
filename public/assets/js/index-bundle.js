@@ -1426,6 +1426,10 @@ var _mithril2 = _interopRequireDefault(_mithril);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// const BACKEND_ROOT = "http://localhost:8080";
+
+var BACKEND_ROOT = "";
+
 var State = exports.State = {
 	Databases: [],
 	Keys: [],
@@ -1434,7 +1438,7 @@ var State = exports.State = {
 	GetDatabases: function GetDatabases() {
 		return _mithril2.default.request({
 			method: "GET",
-			url: "http://localhost:8080/sett/api/sett_data/databases"
+			url: "${BACKEND_ROOT}/sett/api/sett_data/databases"
 		}).then(function (response) {
 			State.Databases = response;
 		}).catch(function (error) {
@@ -1444,7 +1448,7 @@ var State = exports.State = {
 	GetKeys: function GetKeys(db) {
 		return _mithril2.default.request({
 			method: "GET",
-			url: "http://localhost:8080/sett/api/sett_data/keys/" + db
+			url: BACKEND_ROOT + "/sett/api/sett_data/keys/" + db
 		}).then(function (response) {
 			State.Keys = response;
 		}).catch(function (error) {
@@ -1454,7 +1458,7 @@ var State = exports.State = {
 	LoadValue: function LoadValue(db, key) {
 		return _mithril2.default.request({
 			method: "GET",
-			url: "http://localhost:8080/sett/api/sett_data/value/" + db + "/" + key
+			url: BACKEND_ROOT + "/sett/api/sett_data/value/" + db + "/" + key
 		}).then(function (response) {
 			State.CurrentValue = response;
 			State.CurrPage = 1;
@@ -1467,7 +1471,7 @@ var State = exports.State = {
 		State.CurrPage++;
 		return _mithril2.default.request({
 			method: "GET",
-			url: "http://localhost:8080/sett/api/sett_data/keys/" + db + "?p=" + State.CurrPage
+			url: BACKEND_ROOT + "/sett/api/sett_data/keys/" + db + "?p=" + State.CurrPage
 		}).then(function (response) {
 			State.Keys = State.Keys.concat(response);
 		}).catch(function (error) {
@@ -1478,7 +1482,7 @@ var State = exports.State = {
 		console.log(db, query);
 		return _mithril2.default.request({
 			method: "GET",
-			url: "http://localhost:8080/sett/api/sett_data/search/" + db + "?k=" + query
+			url: BACKEND_ROOT + "/sett/api/sett_data/search/" + db + "?k=" + query
 		}).then(function (response) {
 			console.log(response);
 			State.Keys = State.Keys.concat(response);
@@ -1490,7 +1494,7 @@ var State = exports.State = {
 		State.CurrPage++;
 		return _mithril2.default.request({
 			method: "GET",
-			url: "http://localhost:8080/sett/api/sett_data/keys/" + db + "?p=" + State.CurrPage
+			url: BACKEND_ROOT + "/sett/api/sett_data/keys/" + db + "?p=" + State.CurrPage
 		}).then(function (response) {
 			State.Keys = State.Keys.concat(response);
 		}).catch(function (error) {

@@ -1,5 +1,9 @@
 import m from "mithril";
 
+// const BACKEND_ROOT = "http://localhost:8080";
+
+const BACKEND_ROOT = "";
+
 export var State = {
 	Databases: [],
 	Keys: [],
@@ -9,7 +13,7 @@ export var State = {
 		return m
 			.request({
 				method: "GET",
-				url: "http://localhost:8080/sett/api/sett_data/databases"
+				url: "${BACKEND_ROOT}/sett/api/sett_data/databases"
 			})
 			.then(function(response) {
 				State.Databases = response;
@@ -22,7 +26,7 @@ export var State = {
 		return m
 			.request({
 				method: "GET",
-				url: `http://localhost:8080/sett/api/sett_data/keys/${db}`
+				url: `${BACKEND_ROOT}/sett/api/sett_data/keys/${db}`
 			})
 			.then(function(response) {
 				State.Keys = response;
@@ -35,7 +39,7 @@ export var State = {
 		return m
 			.request({
 				method: "GET",
-				url: `http://localhost:8080/sett/api/sett_data/value/${db}/${key}`
+				url: `${BACKEND_ROOT}/sett/api/sett_data/value/${db}/${key}`
 			})
 			.then(function(response) {
 				State.CurrentValue = response;
@@ -51,9 +55,7 @@ export var State = {
 		return m
 			.request({
 				method: "GET",
-				url: `http://localhost:8080/sett/api/sett_data/keys/${db}?p=${
-					State.CurrPage
-				}`
+				url: `${BACKEND_ROOT}/sett/api/sett_data/keys/${db}?p=${State.CurrPage}`
 			})
 			.then(function(response) {
 				State.Keys = State.Keys.concat(response);
@@ -63,14 +65,14 @@ export var State = {
 			});
 	},
 	KeysSearch: function(db, query) {
-    console.log(db, query)
+		console.log(db, query);
 		return m
 			.request({
 				method: "GET",
-				url: `http://localhost:8080/sett/api/sett_data/search/${db}?k=${query}`
+				url: `${BACKEND_ROOT}/sett/api/sett_data/search/${db}?k=${query}`
 			})
 			.then(function(response) {
-        console.log(response)
+				console.log(response);
 				State.Keys = State.Keys.concat(response);
 			})
 			.catch(function(error) {
@@ -82,9 +84,7 @@ export var State = {
 		return m
 			.request({
 				method: "GET",
-				url: `http://localhost:8080/sett/api/sett_data/keys/${db}?p=${
-					State.CurrPage
-				}`
+				url: `${BACKEND_ROOT}/sett/api/sett_data/keys/${db}?p=${State.CurrPage}`
 			})
 			.then(function(response) {
 				State.Keys = State.Keys.concat(response);
